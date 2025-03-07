@@ -1,8 +1,9 @@
 import pytest
 from langchain_community.graph_vectorstores.links import Link
+
 from langchain_jieba import JiebaLinkExtractor
 
-CONTENT1 = '''
+CONTENT1 = """
 文洁默默地离开了已经空无一人一片狼藉的操场，走上回家的路。当她走到教工宿舍楼下时，听到了从二楼自家窗口传出的一阵阵痴笑声，
 这声音是那个她曾叫做妈妈的女人发出的。文洁默默地转身走去，任双脚将她带向别处。
 她最后发现自己来到了阮雯的家门前，在大学四年中，阮老师一直是她的班主任，也是她最亲密的朋友。
@@ -17,7 +18,8 @@ CONTENT1 = '''
 她默默地站了一会儿，转身走去，悲伤已感觉不到了，她现在就像一台盖革计数仪，当置身于超量的辐射中时，
 反而不再有任何反应，没有声响，读数为零。但当她就要出门时，还是回过头来最后看了阮雯一眼，
 她发现阮老师很好地上了妆，她抹了口红，也穿上了高跟鞋。
-'''
+"""
+
 
 @pytest.mark.requires("jieba")
 def test_tfidf_analyzer():
@@ -27,8 +29,9 @@ def test_tfidf_analyzer():
     assert results == {
         Link.bidir(kind="kw", tag="阮雯"),
         Link.bidir(kind="kw", tag="文洁"),
-        Link.bidir(kind="kw", tag="叶文洁")
+        Link.bidir(kind="kw", tag="叶文洁"),
     }
+
 
 @pytest.mark.requires("jieba")
 def test_textrank_analyzer():
@@ -38,27 +41,30 @@ def test_textrank_analyzer():
     assert results == {
         Link.bidir(kind="kw", tag="阮雯"),
         Link.bidir(kind="kw", tag="文洁"),
-        Link.bidir(kind="kw", tag="叶文洁")
+        Link.bidir(kind="kw", tag="叶文洁"),
     }
+
 
 @pytest.mark.requires("jieba")
 def test_mixed_analyzer():
     "mixed analyzer test case"
-    extractor = JiebaLinkExtractor(analyzer="mixed",weight=(0.4,0.6))
+    extractor = JiebaLinkExtractor(analyzer="mixed", weight=(0.4, 0.6))
     results = extractor.extract_one(CONTENT1)
     assert results == {
         Link.bidir(kind="kw", tag="文洁"),
         Link.bidir(kind="kw", tag="叶文洁"),
-        Link.bidir(kind="kw", tag="阮雯")
+        Link.bidir(kind="kw", tag="阮雯"),
     }
+
 
 @pytest.mark.requires("jieba")
 def test_with_extract_keywords_kwargs():
     "test with extract_keywords_kwargs params"
-    extractor = JiebaLinkExtractor(extract_keywords_kwargs={
-        "topK": 5, 
-        "withWeight": True, 
-        "allowPOS": ('n','nr','ns','nt','nz')
+    extractor = JiebaLinkExtractor(
+        extract_keywords_kwargs={
+            "topK": 5,
+            "withWeight": True,
+            "allowPOS": ("n", "nr", "ns", "nt", "nz"),
         }
     )
     results = extractor.extract_one(CONTENT1)
@@ -67,5 +73,5 @@ def test_with_extract_keywords_kwargs():
         Link.bidir(kind="kw", tag="阮雯"),
         Link.bidir(kind="kw", tag="高跟鞋"),
         Link.bidir(kind="kw", tag="口红"),
-        Link.bidir(kind="kw", tag="叶文洁")
+        Link.bidir(kind="kw", tag="叶文洁"),
     }

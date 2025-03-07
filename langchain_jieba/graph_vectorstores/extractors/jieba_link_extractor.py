@@ -1,13 +1,15 @@
 from typing import Any, Dict, Iterable, Optional, Set, Tuple, Union
-from langchain_core.documents import Document
+
 from langchain_community.graph_vectorstores.extractors.link_extractor import (
-    LinkExtractor
+    LinkExtractor,
 )
 from langchain_community.graph_vectorstores.links import Link
+from langchain_core.documents import Document
 
 __all__ = ["JiebaLinkExtractor"]
 
 KeybertInput = Union[str, Document]
+
 
 class JiebaLinkExtractor(LinkExtractor[KeybertInput]):
     """
@@ -83,8 +85,8 @@ class JiebaLinkExtractor(LinkExtractor[KeybertInput]):
             ) from exc
 
     def extract_one(self, input: KeybertInput) -> Set[Link]:
-        from jieba.analyse.tfidf import TFIDF
         from jieba.analyse.textrank import TextRank
+        from jieba.analyse.tfidf import TFIDF
 
         if isinstance(input, Document):
             input = input.page_content
